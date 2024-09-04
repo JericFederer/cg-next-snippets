@@ -1,6 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 import { db } from '@/db';
 
@@ -54,6 +55,9 @@ export async function createSnippet(formState: { message: string }, formData: Fo
 		}
 	}
 	
+	// * Updates the home page display
+	revalidatePath('/')
+
 	// * Redirect to root route
 	redirect('/');
 }
@@ -64,6 +68,10 @@ export async function editSnippet(id: number, code: string) {
 		data: { code }
 	})
 
+	// * Updates the editted record page
+	revalidatePath(`/snippets/${ id }`)
+
+	// * Redirect to the editted record page
 	redirect(`/snippets/${ id }`)
 }
 
@@ -72,5 +80,9 @@ export async function deleteSnippet(id: number) {
 		where: { id }
 	});
 
+	// * Updates the home page display
+	revalidatePath('/')
+	
+	// * Redirect to root route
 	redirect('/');
 }
